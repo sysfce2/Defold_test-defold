@@ -1,0 +1,79 @@
+local test = require "tests.test"
+
+function init(self)
+	local max = sys.get_config_int("sprite.max_count")
+	for i=1,max do
+		local id = factory.create("#shipfactory1")
+		assert(id)
+	end
+
+	local id = factory.create("#shipfactory1")
+	assert(not id)
+
+	assert(factory.get_status("#shipfactory1") == factory.STATUS_LOADED)
+	assert(factory.get_status("#dynamicprototype") == factory.STATUS_LOADED)
+	assert(factory.get_status("#loaddynamically") == factory.STATUS_UNLOADED)
+		
+	-- non dynamic prototype
+	local ok, err = pcall(factory.set_prototype, "#shipfactory2", "/tests/factory/ship2.goc")
+	assert(not ok)
+
+	-- dynamic prototype
+	local ok, err = pcall(factory.set_prototype, "#dynamicprototype", "/tests/factory/ship2.goc")
+	assert(ok)
+
+	test.async(function()
+		local count = 0
+		factory.load("#loaddynamically", function() count = count + 1 end)
+		assert(factory.get_status("#loaddynamically") == factory.STATUS_LOADING)
+
+		test.wait(function() return count == 1 end)
+		assert(factory.get_status("#loaddynamically") == factory.STATUS_LOADED)
+		test.ok()
+	end)
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

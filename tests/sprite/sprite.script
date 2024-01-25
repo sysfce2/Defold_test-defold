@@ -1,0 +1,25 @@
+local test = require "tests.test"
+
+function init(self)
+	sprite.set_hflip("#sprite", true)
+	sprite.set_hflip("#sprite", false)
+	sprite.set_vflip("#sprite", true)
+	sprite.set_vflip("#sprite", false)
+
+	test.props_read("#sprite", { "size", "frame_count", "animation" })
+	test.props_read_write("#sprite", { "scale", "playback_rate", "material", "image", "cursor" })
+
+	local count = 0
+	sprite.play_flipbook("#sprite1", "none", function() count = count + 1 end)
+	sprite.play_flipbook("#sprite2", "once_forward", function() count = count + 1 end)
+	sprite.play_flipbook("#sprite3", "once_backward", function() count = count + 1 end)
+	sprite.play_flipbook("#sprite4", "once_pingpong", function() count = count + 1 end)
+	sprite.play_flipbook("#sprite5", "loop_forward", function() count = count + 1 end)
+	sprite.play_flipbook("#sprite6", "loop_backward", function() count = count + 1 end)
+	sprite.play_flipbook("#sprite7", "loop_pingpong", function() count = count + 1 end)
+
+	timer.delay(2, false, function()
+		assert(count == 3)
+		test.ok()
+	end)
+end

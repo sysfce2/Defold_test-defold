@@ -1,0 +1,121 @@
+local test = require "tests.test"
+
+function init(self)
+	assert(go.exists("go"))
+	assert(go.exists("go2"))
+
+	local p1 = go.get_position()
+	local p2 = go.get_position("go2")
+	go.set_position(p1)
+	go.set_position(p2, "go2")
+
+	local s1 = go.get_scale()
+	local s2 = go.get_scale("go2")
+	go.set_scale(s1)
+	go.set_scale(s2, "go2")
+
+	local r1 = go.get_rotation()
+	local r2 = go.get_rotation("go2")
+	go.set_rotation(r1)
+	go.set_rotation(r2, "go2")
+
+	assert(go.get_id() == hash("/go"))
+	assert(go.get_id("go2") == hash("/go2"))
+
+	assert(go.get_parent("parent") == nil)
+	assert(go.get_parent("child") == hash("/parent"))
+
+	go.set_scale(vmath.vector3(2, 3, 4))
+	assert(go.get_scale_uniform() == 2)
+
+	local wp1 = go.get_world_position()
+	local wp2 = go.get_world_position("go2")
+	local ws1 = go.get_world_scale()
+	local ws2 = go.get_world_scale("go2")
+	local wr1 = go.get_world_rotation()
+	local wr2 = go.get_world_rotation("go2")
+	local wt1 = go.get_world_transform()
+	local wt2 = go.get_world_transform("go2")
+
+	test.async(function(yield, resume)
+		-- world scale
+		assert(go.get_world_scale_uniform("child") == 1)
+		assert(go.get_world_scale_uniform("parent") == 1)
+		go.set_scale(vmath.vector3(4), "child")
+		go.set_scale(vmath.vector3(2), "parent")
+		test.wait()
+		assert(go.get_world_scale_uniform("child") == 8)
+		assert(go.get_world_scale_uniform("parent") == 2)
+
+		-- delete game object
+		go.delete("go3")
+		assert(go.exists("go3"))
+		test.wait()
+		assert(not go.exists("go3"))
+
+		-- set parent
+		go.set_parent("go4", "parent")
+		assert(go.get_parent("go4") == nil)
+		test.wait()
+		assert(go.get_parent("go4") == hash("/parent"))
+
+		-- animate
+		local count = 0
+		go.animate(".", "position.x", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_LINEAR, 1, 0, function() count = count + 1 end)
+		go.animate(".", "position.x", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_LINEAR, 1, 0, function() count = count + 1 end)
+		go.animate(".", "position.y", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_LINEAR, 1, 0, function() count = count + 1 end)
+		go.animate(".", "position.z", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_LINEAR, 1, 0, function() count = count + 1 end)
+		go.cancel_animations(".", "position.z")
+	
+		test.wait(function()
+			return count == 2
+		end)
+		
+		test.ok()
+	end)
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

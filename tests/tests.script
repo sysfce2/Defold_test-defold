@@ -1,0 +1,97 @@
+local TESTS = {
+	"#spriteproxy",
+	"#goproxy",
+	"#factoryproxy",
+}
+
+local TIMEOUT = 5
+
+local RESULT_OK = "OK"
+local RESULT_ERROR = "ERROR"
+local RESULT_TIMEOUT = "TIMEOUT"
+
+local function load_test(self, test)
+	self.current_test = test
+	print("Loading", self.current_test)
+	msg.post(self.current_test, "async_load")
+
+	self.current_timer = timer.delay(TIMEOUT, false, function()
+		msg.post("#", "test_timeout")
+	end)
+end
+
+local function show_test_results_and_exit(self)
+	local ok = 0
+	local errors = 0
+	local timeouts = 0
+	print("")
+	for test,result in pairs(self.results) do
+		if result.status == RESULT_OK then ok = ok + 1 end
+		if result.status == RESULT_ERROR then errors = errors + 1 end
+		if result.status == RESULT_TIMEOUT then timeouts = timeouts + 1 end
+		print(("Test '%s' %s"):format(test, result.status))
+	end
+	local total = ok + errors + timeouts
+	print("")
+	print(("Test results: %d OK, %d ERRORS, %d TIMEOUTS"):format(ok, errors, timeouts))
+	print("")
+	local code = (ok == total) and 0 or 1
+	print("Exit with code", code)
+	sys.exit(code)
+end
+
+local function next_test(self)
+	if self.current_timer then
+		timer.cancel(self.current_timer)
+		self.current_timer = nil
+	end
+
+	if self.current_test then
+		print("Unloading", self.current_test)
+		msg.post(self.current_test, "unload")
+		self.current_test = nil
+		return
+	end
+
+	local next_test = table.remove(TESTS)
+	if next_test then
+		load_test(self, next_test)
+		return
+	end
+
+	show_test_results_and_exit(self)
+end
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	
+	self.current_test = nil
+	self.results = {}
+
+	sys.set_error_handler(function(source, message, traceback)
+		msg.post("tests:/tests", "test_error", { source = source, message = message, traceback = traceback })
+	end)
+	next_test(self)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("next_test") then
+		next_test(self)
+	elseif message_id == hash("test_success") then
+		print("Finished", self.current_test)
+		self.results[self.current_test] = { status = RESULT_OK }
+		next_test(self)
+	elseif message_id == hash("test_error") then
+		print("Failed", self.current_test, message.message)
+		self.results[self.current_test] = { status = RESULT_ERROR, extra = message }
+		next_test(self)
+	elseif message_id == hash("test_timeout") then
+		print("Timeout", self.current_test)
+		self.results[self.current_test] = { status = RESULT_TIMEOUT }
+		next_test(self)
+	elseif message_id == hash("proxy_loaded") then
+		msg.post(sender, "enable")
+	elseif message_id == hash("proxy_unloaded") then
+		next_test(self)
+	end
+end
