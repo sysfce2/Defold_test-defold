@@ -1,0 +1,17 @@
+go.property("propnumber", 0)
+go.property("propv3", vmath.vector3())
+go.property("propv4", vmath.vector4())
+go.property("propquat", vmath.quat())
+go.property("propmatrix4", vmath.matrix4())
+go.property("prophash", hash(""))
+go.property("propbool", true)
+
+function init(self)
+	print(self.propnumber)
+	print(self.propv3)
+	print(self.propv4)
+	print(self.propquat)
+	print(self.propmatrix4)
+	print(self.prophash)
+	print(self.propbool)
+end

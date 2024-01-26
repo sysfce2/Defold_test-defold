@@ -1,0 +1,98 @@
+images {
+  image: "/tests/bugs/issue-8402/images/blue.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_5
+}
+images {
+  image: "/tests/bugs/issue-8402/images/green.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_5
+}
+images {
+  image: "/tests/bugs/issue-8402/images/grey.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_5
+}
+images {
+  image: "/tests/bugs/issue-8402/images/red.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_5
+}
+images {
+  image: "/tests/bugs/issue-8402/images/yellow.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/eyeball_angry_left.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/eyeball_angry_right.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/eyeball_happy_left.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/eyeball_happy_right.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/left_angry.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_6
+}
+images {
+  image: "/tests/bugs/issue-8402/images/left_angry_blink.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/left_happy.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/left_happy_blink.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/right_angry.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/right_angry_blink.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/right_happy.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/right_happy_blink.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/mouth_angry_closed.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/mouth_angry_open.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/mouth_happy_closed.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/mouth_happy_open.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/logo.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/tests/bugs/issue-8402/images/button.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+margin: 0
+extrude_borders: 0
+inner_padding: 0
+max_page_width: 0
+max_page_height: 0
+rename_patterns: ""

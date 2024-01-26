@@ -2,6 +2,7 @@ local TESTS = {
 	"#spriteproxy",
 	"#goproxy",
 	"#factoryproxy",
+	"#issue-8402",
 }
 
 local TIMEOUT = 5

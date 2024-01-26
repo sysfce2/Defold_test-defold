@@ -1,79 +1,67 @@
 local test = require "tests.test"
 
 function init(self)
+	-- check resource cap on spawn error
 	local max = sys.get_config_int("sprite.max_count")
 	for i=1,max do
-		local id = factory.create("#shipfactory1")
-		assert(id)
+		assert(factory.create("#shipfactory1"))
 	end
+	assert(not factory.create("#shipfactory1"))
 
-	local id = factory.create("#shipfactory1")
-	assert(not id)
+	-- factory create with properties
+	local id = factory.create("#properties")
+	local url = msg.url(nil, id, "properties")
+	local props = {}
+	props.foo = 1
+	props.bar = vmath.vector3()
+	props.propnumber = go.get(url, "propnumber") + 1
+	props.propv3 = go.get(url, "propv3") + vmath.vector3(1)
+	props.propv4 = go.get(url, "propv4") + vmath.vector4(1)
+	props.propquat = go.get(url, "propquat") * vmath.quat(2, 2, 2, 2)
+	--props.propmatrix4 = vmath.matrix4()
+	props.prophash = hash("foobar")
+	props.propbool = not go.get(url, "propbool")
+
+	local id = factory.create("#properties", nil, nil, props)
+	local url = msg.url(nil, id, "properties")
+	assert(go.get(url, "propnumber") == props.propnumber)
+	assert(go.get(url, "propv3") == props.propv3)
+	assert(go.get(url, "propv3") == props.propv3)
+	assert(go.get(url, "propquat") == props.propquat)
+	assert(go.get(url, "prophash") == props.prophash)
+	assert(go.get(url, "propbool") == props.propbool)
+	
+	assert(factory.create("#properties"))
+	assert(factory.create("#properties", vmath.vector3()))
+	assert(factory.create("#properties", vmath.vector3(), vmath.quat()))
+	assert(factory.create("#properties", vmath.vector3(), vmath.quat(), props))
+	assert(factory.create("#properties", vmath.vector3(), vmath.quat(), props, vmath.vector3()))
+	assert(factory.create("#properties", nil,             vmath.quat(), props, vmath.vector3()))
+	assert(factory.create("#properties", vmath.vector3(), nil,          props, vmath.vector3()))
+	assert(factory.create("#properties", vmath.vector3(), vmath.quat(), nil,   vmath.vector3()))
+	assert(factory.create("#properties", vmath.vector3(), vmath.quat(), props, nil))
 
 	assert(factory.get_status("#shipfactory1") == factory.STATUS_LOADED)
 	assert(factory.get_status("#dynamicprototype") == factory.STATUS_LOADED)
 	assert(factory.get_status("#loaddynamically") == factory.STATUS_UNLOADED)
-		
+
 	-- non dynamic prototype
-	local ok, err = pcall(factory.set_prototype, "#shipfactory2", "/tests/factory/ship2.goc")
-	assert(not ok)
+	test.assert_error(factory.set_prototype, "#shipfactory2", "/tests/factory/ship2.goc")
 
 	-- dynamic prototype
-	local ok, err = pcall(factory.set_prototype, "#dynamicprototype", "/tests/factory/ship2.goc")
-	assert(ok)
+	test.assert_error(factory.set_prototype, "#dynamicprototype", "doesnotexist")
+	factory.set_prototype("#dynamicprototype", "/tests/factory/ship2.goc")
 
 	test.async(function()
-		local count = 0
-		factory.load("#loaddynamically", function() count = count + 1 end)
-		assert(factory.get_status("#loaddynamically") == factory.STATUS_LOADING)
-
-		test.wait(function() return count == 1 end)
+		test.wait_until_done(function(done)
+			factory.load("#loaddynamically", done)
+			assert(factory.get_status("#loaddynamically") == factory.STATUS_LOADING)
+		end)
 		assert(factory.get_status("#loaddynamically") == factory.STATUS_LOADED)
+
+		factory.unload("#loaddynamically")
+		assert(factory.get_status("#loaddynamically") == factory.STATUS_UNLOADED)
+
 		test.ok()
 	end)
-end
-
-function final(self)
-	-- Add finalization code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
-function update(self, dt)
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
-function fixed_update(self, dt)
-	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
-	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
-	-- Physics section of game.project
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
-function on_message(self, message_id, message, sender)
-	-- Add message-handling code here
-	-- Learn more: https://defold.com/manuals/message-passing/
-	-- Remove this function if not needed
-end
-
-function on_input(self, action_id, action)
-	-- Add input-handling code here. The game object this script is attached to
-	-- must have acquired input focus:
-	--
-	--    msg.post(".", "acquire_input_focus")
-	--
-	-- All mapped input bindings will be received. Mouse and touch input will
-	-- be received regardless of where on the screen it happened.
-	-- Learn more: https://defold.com/manuals/input/
-	-- Remove this function if not needed
-end
-
-function on_reload(self)
-	-- Add reload-handling code here
-	-- Learn more: https://defold.com/manuals/hot-reload/
-	-- Remove this function if not needed
 end
