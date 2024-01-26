@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  schedule:
+    # nightly at 03:00
+    - cron: 0 3 * * *
+  push:
+    branches:
+      - '*'
+
+
+jobs:
+  bld-eng-windows:
+    strategy:
+      matrix:
+        platform: [win32, x86_64-win32]
+    runs-on: windows-latest
+    steps: [
+      { name: 'Checkout', uses: actions/checkout@v3 },
+      { name: 'Install Python', uses: actions/setup-python@v3, with: { python-version: 3.11, architecture: x64 } },
+      { name: 'Install Java', uses: actions/setup-java@v3, with: { java-version: '17.0.5+8', distribution: 'temurin'} },
+      { name: 'Run',
+        shell: bash,
+        env: { DEFOLD_BOOSTRAP_COLLECTION: '/tests/tests.collectionc' },
+        run: './.test/run.sh ${{ matrix.platform }}'
+      }
+    ]
+
+  bld-eng-linux:
+    strategy:
+      matrix:
+        platform: [x86_64-linux]
+    runs-on: ubuntu-20.04
+    steps: [
+      { name: 'Checkout', uses: actions/checkout@v3 },
+      { name: 'Install Python', uses: actions/setup-python@v3, with: { python-version: 3.11, architecture: x64 } },
+      { name: 'Install Java', uses: actions/setup-java@v3, with: { java-version: '17.0.5+8', distribution: 'temurin'} },
+      { name: 'Run',
+        shell: bash,
+        env: { DEFOLD_BOOSTRAP_COLLECTION: '/tests/tests.collectionc' },
+        run: './.test/run.sh ${{ matrix.platform }}'
+      }
+    ]
+
+  bld-eng-macos:
+    strategy:
+      matrix:
+        platform: [x86_64-macos, arm64-macos]
+    runs-on: macos-latest
+    steps: [
+      { name: 'Checkout', uses: actions/checkout@v3 },
+      { name: 'Install Python', uses: actions/setup-python@v3, with: { python-version: 3.11, architecture: x64 } },
+      { name: 'Install Java', uses: actions/setup-java@v3, with: { java-version: '17.0.5+8', distribution: 'temurin'} },
+      { name: 'Run',
+        shell: bash,
+        env: { DEFOLD_BOOSTRAP_COLLECTION: '/tests/tests.collectionc' },
+        run: './.test/run.sh ${{ matrix.platform }}'
+      }
+    ]
