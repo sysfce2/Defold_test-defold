@@ -2,7 +2,6 @@ go.property("propnumber", 0)
 go.property("propv3", vmath.vector3())
 go.property("propv4", vmath.vector4())
 go.property("propquat", vmath.quat())
-go.property("propmatrix4", vmath.matrix4())
 go.property("prophash", hash(""))
 go.property("propbool", true)
 
