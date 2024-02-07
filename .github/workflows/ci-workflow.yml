@@ -13,7 +13,7 @@ jobs:
   bld-eng-windows:
     strategy:
       matrix:
-        platform: [win32, x86_64-win32]
+        platform: [x86_64-win32]
     runs-on: windows-latest
     steps: [
       { name: 'Checkout', uses: actions/checkout@v3 },
