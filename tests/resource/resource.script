@@ -1,0 +1,69 @@
+local test = require "tests.test"
+
+local function create_texture(texture_path, texture_width, texture_height)
+	local tparams = {
+		width          = texture_width,
+		height         = texture_height,
+		type           = resource.TEXTURE_TYPE_2D,
+		format         = resource.TEXTURE_FORMAT_RGBA,
+	}
+	local texture_id = resource.create_texture(texture_path, tparams)
+	return texture_id
+end
+
+local function create_atlas(atlas_path, texture_path)
+	local tinfo = resource.get_texture_info(texture_path)
+	local image_width = tinfo.width * 0.5
+	local image_height = tinfo.height * 0.5
+
+	-- create an atlas with one animation and one square geometry
+	-- note that the function doesn't support hashes for the texture,
+	-- you need to use a string for the texture path here aswell
+	local aparams = {
+		texture = texture_path,
+		animations = {
+			{
+				id          = "anim",
+				width       = image_width,
+				height      = image_height,
+				frame_start = 1,
+				frame_end   = 2,
+			}
+		},
+		geometries = {
+			{
+				vertices  = {
+					0, 0,
+					0, image_height,
+					image_width, image_height,
+					image_width, 0
+				},
+				uvs = {
+					0, 0,
+					0, image_height,
+					image_width, image_height,
+					image_width, 0
+				},
+				indices = {0,1,2,0,2,3}
+			}
+		}
+	}
+	local atlas_id = resource.create_atlas(atlas_path, aparams)
+	return atlas_id
+end
+
+function init(self)
+	local texture_path = "/my_texture.texturec"
+	local atlas_path = "/my_atlas.texturesetc"
+
+	local texture_id = create_texture(texture_path, 128, 128)
+	assert(texture_id)
+	local atlas_id = create_atlas(atlas_path, texture_path)
+	assert(atlas_id)
+
+	go.set("#sprite", "image", atlas_id)
+
+	timer.delay(1, false, function()
+		test.ok()
+	end)
+end

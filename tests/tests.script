@@ -3,6 +3,7 @@ local TESTS = {
 	"#goproxy",
 	"#factoryproxy",
 	"#issue-8402",
+	"#resourceproxy",
 }
 
 local TIMEOUT = 5
