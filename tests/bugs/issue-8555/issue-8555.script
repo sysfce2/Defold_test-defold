@@ -1,0 +1,11 @@
+local test = require "tests.test"
+
+function init(self)
+	label.set_text(".", "my text")
+
+	timer.delay(1, false, function()
+		print("label1", label.get_text("#label1"))
+		print("label2", label.get_text("#label2"))
+		test.ok()
+	end)
+end
