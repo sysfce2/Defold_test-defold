@@ -4,8 +4,8 @@ local function create_texture(texture_path, texture_width, texture_height)
 	local tparams = {
 		width          = texture_width,
 		height         = texture_height,
-		type           = resource.TEXTURE_TYPE_2D,
-		format         = resource.TEXTURE_FORMAT_RGBA,
+		type           = graphics.TEXTURE_TYPE_2D,
+		format         = graphics.TEXTURE_FORMAT_RGBA,
 	}
 	local texture_id = resource.create_texture(texture_path, tparams)
 	return texture_id
